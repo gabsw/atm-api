@@ -1,0 +1,10 @@
+### GET BALANCE
+GET http://localhost/api/v1/account/1000/balance
+
+### WITHDRAWL FROM ACCOUNT
+POST http://localhost/api/v1/account/1000/withdrawal
+Content-Type: application/json
+
+{
+  "amount": 90
+}
