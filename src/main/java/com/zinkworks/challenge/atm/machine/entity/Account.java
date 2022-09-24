@@ -40,4 +40,12 @@ public class Account {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    public int maxWithdrawalAmount() {
+        return balance + overdraft;
+    }
+
+    public void updateBalance(final int amount) { // TODO: check overdraft?
+        balance += amount;
+    }
 }

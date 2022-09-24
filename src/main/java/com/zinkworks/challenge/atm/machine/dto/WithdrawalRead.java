@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,6 +13,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class WithdrawalRead {
     private String accountNumber;
-    private Map<String, Integer> dispensedBills;
+    private List<DispensedBillRead> dispensedBills;
     private int remainingBalance;
 }

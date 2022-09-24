@@ -24,7 +24,7 @@ public class Bill {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "face_value", nullable = false)
+    @Column(name = "face_value", nullable = false) // TODO: Remove setter
     private int faceValue;
 
     @Column(name = "quantity", nullable = false)

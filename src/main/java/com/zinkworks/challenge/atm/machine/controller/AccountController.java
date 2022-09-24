@@ -5,7 +5,7 @@ import com.zinkworks.challenge.atm.machine.dto.WithdrawalCreate;
 import com.zinkworks.challenge.atm.machine.dto.WithdrawalRead;
 import com.zinkworks.challenge.atm.machine.service.AccountService;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zinkworks.challenge.atm.machine.validation.WithdrawalNotAllowedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,8 @@ public class AccountController {
     @PostMapping("/{accountNumber}/withdrawal")
     public ResponseEntity<WithdrawalRead> createWithdrawal(
         @PathVariable final String accountNumber,
-        @Valid @RequestBody WithdrawalCreate withdrawal) {
+        @Valid @RequestBody WithdrawalCreate withdrawal)
+        throws WithdrawalNotAllowedException, AccountNotFoundException {
         WithdrawalRead createdWithdrawal = accountService.createWithdrawal(accountNumber, withdrawal);
         return new ResponseEntity<>(createdWithdrawal, HttpStatus.CREATED);
     }
