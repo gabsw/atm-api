@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BalanceRead {
-    private int accountId;
+    private String accountNumber;
     private int balance;
     private int maxWithdrawalAmount;
 }

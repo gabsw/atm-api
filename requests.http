@@ -1,8 +1,8 @@
 ### GET BALANCE
-GET http://localhost/api/v1/account/1000/balance
+GET http://localhost:8080/api/v1/account/123456789/balance
 
 ### WITHDRAWL FROM ACCOUNT
-POST http://localhost/api/v1/account/1000/withdrawal
+POST http://localhost:8080/api/v1/account/123456789/withdrawal
 Content-Type: application/json
 
 {

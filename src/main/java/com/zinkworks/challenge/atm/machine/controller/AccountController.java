@@ -4,6 +4,7 @@ import com.zinkworks.challenge.atm.machine.dto.BalanceRead;
 import com.zinkworks.challenge.atm.machine.dto.WithdrawalCreate;
 import com.zinkworks.challenge.atm.machine.dto.WithdrawalRead;
 import com.zinkworks.challenge.atm.machine.service.AccountService;
+import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,21 @@ import javax.validation.Valid;
 @RequestMapping("api/v1/account")
 public class AccountController {
 
-    @Autowired
+    final
     AccountService accountService;
 
-    @GetMapping("/{accountId}/balance")
-    public BalanceRead getBalance(@PathVariable final int accountId) {
-        return accountService.computeCurrentBalance(accountId);
+    public AccountController(final AccountService accountService) {this.accountService = accountService;}
+
+    @GetMapping("/{accountNumber}/balance")
+    public BalanceRead getBalance(@PathVariable final String accountNumber) throws AccountNotFoundException {
+        return accountService.computeCurrentBalance(accountNumber);
     }
 
-    @PostMapping("/{accountId}/withdrawal")
+    @PostMapping("/{accountNumber}/withdrawal")
     public ResponseEntity<WithdrawalRead> createWithdrawal(
-        @PathVariable final int accountId,
+        @PathVariable final String accountNumber,
         @Valid @RequestBody WithdrawalCreate withdrawal) {
-        WithdrawalRead createdWithdrawal = accountService.createWithdrawal(accountId, withdrawal);
+        WithdrawalRead createdWithdrawal = accountService.createWithdrawal(accountNumber, withdrawal);
         return new ResponseEntity<>(createdWithdrawal, HttpStatus.CREATED);
     }
 }

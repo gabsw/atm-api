@@ -12,7 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WithdrawalRead {
-    private int accountId;
+    private String accountNumber;
     private Map<String, Integer> dispensedBills;
     private int remainingBalance;
 }

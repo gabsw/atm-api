@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "atm_machine.withdrawals")
+@Table(name = "withdrawals", schema = "atm_machine")
 public class Withdrawal {
 
     @Id
@@ -24,7 +24,7 @@ public class Withdrawal {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "accountId", nullable = false)
+    @Column(name = "account_id", nullable = false)
     private Integer accountId;
 
     @Column(name = "amount", nullable = false)

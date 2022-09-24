@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "atm_machine.bills_dispensed")
+@Table(name = "bills_dispensed", schema = "atm_machine")
 public class BillDispensed {
 
     @Id
