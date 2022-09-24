@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+  application:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_atm_machine
+      SPRING_DATASOURCE_USERNAME: gabriela
+      SPRING_DATASOURCE_PASSWORD: challenge
+    links:
+      - db
+    networks:
+      - postgres-network
+
+  db:
+    image: library/postgres
+    container_name: "challenge_postgres"
+    environment:
+      POSTGRES_USER: gabriela
+      POSTGRES_PASSWORD: challenge
+      POSTGRES_DB: db_atm_machine
+    volumes:
+      - ./postgresql/sql:/docker-entrypoint-initdb.d/
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
+    driver: "bridge"
+
+volumes:
+  postgres_data:
+    driver: local
