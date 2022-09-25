@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -75,6 +76,15 @@ public class BillServiceTests {
 
         assertEquals(List.of(50, 20, 10, 5), sortedFaceValues);
         assertEquals(List.of(1, 1, 1, 1), sortedQuantities);
+    }
+
+    @Test
+    void wronglySortedBillsInput() {
+        final List<Bill> ascendingStartingBills = createStartingBills().stream()
+                                                                       .sorted(Comparator.comparing(Bill::getFaceValue))
+                                                                       .toList();
+        assertThrows(IllegalArgumentException.class,
+                     () -> billService.optimalBillsCombination(ascendingStartingBills, 15));
     }
 
     @Test

@@ -26,7 +26,6 @@ public class BillService {
     public List<UsedBill> optimalBillsCombination(final List<Bill> allBills, final int requestedAmount)
         throws NotEnoughBillsException {
 
-        // TODO: create test
         final boolean isOrdered = Comparators.isInOrder(allBills, comparing(Bill::getFaceValue).reversed());
         if (!isOrdered) {
             throw new IllegalArgumentException("allBills must be ordered by their faceValue descending");
