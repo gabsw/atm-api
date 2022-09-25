@@ -98,8 +98,9 @@ public class AccountService {
     private void checkForEnoughFunds(final int maxAmount, final int requestedAmount)
         throws NotEnoughFundsException {
         if (requestedAmount > maxAmount) {
-            // TODO: Improves to add values
-            throw new NotEnoughFundsException("The requested amount exceeds the maximum withdrawal funds.");
+            throw new NotEnoughFundsException(
+                String.format("The requested amount=%d exceeds the maximum withdrawal funds=%d.", maxAmount,
+                              requestedAmount));
         }
     }
 
