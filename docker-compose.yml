@@ -10,7 +10,7 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_atm_machine
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_atm
       SPRING_DATASOURCE_USERNAME: gabriela
       SPRING_DATASOURCE_PASSWORD: challenge
     links:
@@ -24,7 +24,7 @@ services:
     environment:
       POSTGRES_USER: gabriela
       POSTGRES_PASSWORD: challenge
-      POSTGRES_DB: db_atm_machine
+      POSTGRES_DB: db_atm
     volumes:
       - ./postgresql/sql:/docker-entrypoint-initdb.d/
       - postgres_data:/var/lib/postgresql/data

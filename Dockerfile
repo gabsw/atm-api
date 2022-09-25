@@ -26,4 +26,4 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 # from the outside.
 EXPOSE 80
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.zinkworks.challenge.atm.machine.Application"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.zinkworks.challenge.atm.Application"]

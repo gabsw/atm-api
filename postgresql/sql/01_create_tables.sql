@@ -1,6 +1,6 @@
-CREATE SCHEMA atm_machine;
+CREATE SCHEMA atm;
 
-CREATE TABLE atm_machine.accounts
+CREATE TABLE atm.accounts
 (
     id             serial       NOT NULL,
     account_number varchar(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE atm_machine.accounts
     CONSTRAINT CURRENT_BALANCE CHECK (balance >= -overdraft)
 );
 
-CREATE TABLE atm_machine.bills
+CREATE TABLE atm.bills
 (
     id         serial    NOT NULL,
     face_value integer   NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE atm_machine.bills
     CONSTRAINT NON_NEG_QUANTITY CHECK (quantity >= 0)
 );
 
-CREATE TABLE atm_machine.withdrawals
+CREATE TABLE atm.withdrawals
 (
     id         serial    NOT NULL,
     account_id integer   NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE atm_machine.withdrawals
     created_at timestamp NOT NULL default now(),
     CONSTRAINT PK_WITHDRAWAL_ID PRIMARY KEY (id),
     CONSTRAINT POSITIVE_AMOUNT CHECK (amount >= 0),
-    CONSTRAINT FK_ACCOUNT_ID FOREIGN KEY (account_id) REFERENCES atm_machine.accounts (id)
+    CONSTRAINT FK_ACCOUNT_ID FOREIGN KEY (account_id) REFERENCES atm.accounts (id)
 );
 
-CREATE TABLE atm_machine.dispensed_bills
+CREATE TABLE atm.dispensed_bills
 (
     id            serial    NOT NULL,
     bill_id       integer   NOT NULL,
@@ -46,6 +46,6 @@ CREATE TABLE atm_machine.dispensed_bills
     quantity      integer   NOT NULL,
     created_at    timestamp NOT NULL default now(),
     CONSTRAINT PK_DISPENSED_ID PRIMARY KEY (id),
-    CONSTRAINT FK_BILL_ID FOREIGN KEY (bill_id) REFERENCES atm_machine.bills (id),
-    CONSTRAINT FK_WITHDRAWAL_ID FOREIGN KEY (withdrawal_id) REFERENCES atm_machine.withdrawals (id)
+    CONSTRAINT FK_BILL_ID FOREIGN KEY (bill_id) REFERENCES atm.bills (id),
+    CONSTRAINT FK_WITHDRAWAL_ID FOREIGN KEY (withdrawal_id) REFERENCES atm.withdrawals (id)
 );
