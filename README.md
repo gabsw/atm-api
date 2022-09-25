@@ -1,6 +1,38 @@
-# atm-api
-This is a take-home challenge from Zinkworks where I will be building a simple ATM machine
+# ATM API
+## Abstract
+This is a take-home challenge from Zinkworks where I built a REST API that simulates a basic ATM machine.
 
+## Author
+Gabriela Santos
 
-## Swagger
-http://localhost:8080/swagger-ui/index.html
+## Resources
+* [ATM REST API documentation](http://localhost:8080/swagger-ui/index.html)
+
+## Main features
+1. Check your account balance and the maximum amount of money that you can withdraw.
+2. Perform a withdrawal from your bank account.
+3. Detailed error handling for common banking operations.
+
+## Requirements
+* Java 17
+* Maven
+
+## How to run using Docker
+
+To build the containers for the first time, make sure that you are in the same folder as `docker-compose.yml` and use following command:
+`docker-compose up --build`
+
+To start and stop without rebuilding the containers, use the following commands:
+`docker-compose start` or `docker-compose start -d` (run in detached mode)
+`docker-compose stop` or `docker-compose stop -d` (run in detached mode)
+
+When the containers are running properly, you will be able to consume the *ATM REST API* according to the documentation below:
+
+* [ATM REST API documentation](http://localhost:8080/swagger-ui.html#/)
+
+The web service will be available on `http://localhost:8080/api/v1/account`.
+
+## Tests
+In order to run all the tests:
+1. Start the database with `docker-compose up db`.
+2. Run `mvn clean test integration-test`. Note that this will truncate tables in the database.

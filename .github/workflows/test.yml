@@ -28,7 +28,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Compile project
-        #run: mvn dependency:resolve
         run: mvn compile
 
       - name: Run tests
