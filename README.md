@@ -32,6 +32,9 @@ When the containers are running properly, you will be able to consume the *ATM R
 
 The web service will be available on `http://localhost:8080/api/v1/account`.
 
+## How to run common HTTP Requests
+If you are using an IDE such as IntelliJ Ultimate, you can run the most common requests for this API using the `requests.http` in the project root.
+
 ## Tests
 In order to run all the tests:
 1. Start the database with `docker-compose up db`.
