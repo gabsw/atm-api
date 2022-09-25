@@ -1,4 +1,6 @@
 # ATM API
+[![Master Tests on Push](https://github.com/gabsw/atm-api/actions/workflows/test.yml/badge.svg)](https://github.com/gabsw/atm-api/actions/workflows/test.yml)
+
 ## Abstract
 This is a take-home challenge from Zinkworks where I built a REST API that simulates a basic ATM machine.
 
