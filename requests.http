@@ -1,3 +1,5 @@
+# When using docker, the exposed port will be 80 instead of 8080
+
 ### GET BALANCE
 GET http://localhost:8080/api/v1/account/123456789/balance
 Authorization: 1234

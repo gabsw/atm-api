@@ -39,3 +39,12 @@ If you are using an IDE such as IntelliJ Ultimate, you can run the most common r
 In order to run all the tests:
 1. Start the database with `docker-compose up db`.
 2. Run `mvn clean test integration-test`. Note that this will truncate tables in the database.
+
+## Things that I would like to improve with more time
+1. Use Spring Security with JWTs to handle the login
+   - Alternatively, the account number could be the username and the PIN could have been a password for Basic Auth
+2. Use Flyway for database migrations, which is what I typically use at work
+3. Use MapStruct for an out-of-the-box mapping between objects instead of doing that manually
+4. Add SonarQube to the pipeline
+5. Add a lint to the pom.xml
+
