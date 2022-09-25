@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Integer> {
-    public List<Bill> findAllByOrderByFaceValueDesc();
+    List<Bill> findAllByOrderByFaceValueDesc();
 }

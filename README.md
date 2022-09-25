@@ -46,5 +46,4 @@ In order to run all the tests:
 2. Use Flyway for database migrations, which is what I typically use at work
 3. Use MapStruct for an out-of-the-box mapping between objects instead of doing that manually
 4. Add SonarQube to the pipeline
-5. Add a lint to the pom.xml
-
+5. Add Javadocs

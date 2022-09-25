@@ -26,15 +26,16 @@ public @interface AllowedAmount {
     Class<? extends Payload>[] payload() default {};
 
     class Validator implements ConstraintValidator<AllowedAmount, Integer> {
+        private static final int BILLS_LEAST_COMMON_DIVISOR = 5;
         @Override
-        public void initialize(AllowedAmount allowedAmount) {
+        public void initialize(final AllowedAmount allowedAmount) {
         }
 
         @Override
         public boolean isValid(
             final Integer amount,
             final ConstraintValidatorContext constraintValidatorContext) {
-            return amount > 0 && amount % 5 == 0;
+            return amount > 0 && amount % BILLS_LEAST_COMMON_DIVISOR == 0;
         }
     }
 }

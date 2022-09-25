@@ -31,7 +31,9 @@ public class AccountController {
     }
 
     @GetMapping("/{accountNumber}/balance")
-    public BalanceRead getBalance(@PathVariable final String accountNumber, @RequestHeader("Authorization") String pin)
+    public BalanceRead getBalance(
+        @PathVariable final String accountNumber,
+        @RequestHeader("Authorization") final String pin)
     throws AccountNotFoundException, MismatchedPinException {
         return accountService.computeCurrentBalance(accountNumber, pin);
     }
@@ -39,8 +41,8 @@ public class AccountController {
     @PostMapping("/{accountNumber}/withdrawal")
     public ResponseEntity<WithdrawalRead> createWithdrawal(
         @PathVariable final String accountNumber,
-        @Valid @RequestBody WithdrawalCreate withdrawal,
-        @RequestHeader("Authorization") String pin)
+        @Valid @RequestBody final WithdrawalCreate withdrawal,
+        @RequestHeader("Authorization") final String pin)
     throws MismatchedPinException, AccountNotFoundException, NotEnoughBillsException, NotEnoughFundsException {
         WithdrawalRead createdWithdrawal = accountService.createWithdrawal(accountNumber, pin, withdrawal);
         return new ResponseEntity<>(createdWithdrawal, HttpStatus.CREATED);

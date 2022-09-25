@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Json {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static String toJson(final Object object) throws JsonProcessingException {
-        return mapper.writeValueAsString(object);
+        return OBJECT_MAPPER.writeValueAsString(object);
     }
 }
