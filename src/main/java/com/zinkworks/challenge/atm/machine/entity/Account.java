@@ -41,7 +41,7 @@ public class Account {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public int maxWithdrawalAmount() {
+    public int maxWithdrawalAmount() { // TODO: do we need to take into account the disposable money on the machine?
         return balance + overdraft;
     }
 

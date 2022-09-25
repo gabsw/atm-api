@@ -12,6 +12,6 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WithdrawalCreate {
-    @Min(1)
+    @Min(1) // TODO: What if they request a value that is not compatible with the amount of notes?
     private int amount;
 }

@@ -9,10 +9,11 @@ import com.zinkworks.challenge.atm.machine.entity.Bill;
 import com.zinkworks.challenge.atm.machine.entity.DispensedBill;
 import com.zinkworks.challenge.atm.machine.entity.Withdrawal;
 import com.zinkworks.challenge.atm.machine.repository.AccountRepository;
-import com.zinkworks.challenge.atm.machine.repository.BillRepository;
 import com.zinkworks.challenge.atm.machine.repository.WithdrawalRepository;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
-import com.zinkworks.challenge.atm.machine.validation.WithdrawalNotAllowedException;
+import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
+import com.zinkworks.challenge.atm.machine.validation.NotEnoughFundsException;
+import com.zinkworks.challenge.atm.machine.validation.ForbiddenOperationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +27,17 @@ public class AccountService {
 
     final AccountRepository accountRepository;
 
-    final BillRepository billRepository;
-
     final WithdrawalRepository withdrawalRepository;
+
+    final BillService billService;
 
     public AccountService(
         final AccountRepository accountRepository,
-        final BillRepository billRepository,
-        final WithdrawalRepository withdrawalRepository) {
+        final WithdrawalRepository withdrawalRepository,
+        final BillService billService) {
         this.accountRepository = accountRepository;
-        this.billRepository = billRepository;
         this.withdrawalRepository = withdrawalRepository;
+        this.billService = billService;
     }
 
 
@@ -62,28 +63,23 @@ public class AccountService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public WithdrawalRead createWithdrawal(final String accountNumber, final WithdrawalCreate withdrawalCreate)
-        throws AccountNotFoundException, WithdrawalNotAllowedException {
+        throws AccountNotFoundException, ForbiddenOperationException, NotEnoughBillsException,
+               NotEnoughFundsException {
 
         final int withdrawalAmount = withdrawalCreate.getAmount();
 
-        // TODO: GET ACCOUNT
         final Account account = fetchAccount(accountNumber);
 
-        // TODO: CHECK IF USER HAS MONEY
-        checkIfWithdrawalIsPossible(account.maxWithdrawalAmount(), withdrawalAmount);
+        checkForEnoughFunds(account.maxWithdrawalAmount(), withdrawalAmount);
 
-        // TODO: GET AVAILABLE BILLS
-        final List<Bill> allBills = billRepository.findAllByOrderByFaceValueDesc();
+        final List<Bill> allBills = billService.fetchAllBillsByDescendingFaceValue();
 
-        // TODO: CAN WE PAY WITH OUR BILLS
-        final List<UsedBill> usedBills = optimalBillsCombination(allBills, withdrawalAmount);
-        // TODO: UPDATE BILLS
-        final List<Bill> billsToUpdate = getBillsToUpdate(usedBills);
-        billRepository.saveAll(billsToUpdate);
-        // TODO: UPDATE BALANCE
+        final List<UsedBill> usedBills = billService.optimalBillsCombination(allBills, withdrawalAmount);
+
+        billService.updateBills(usedBills);
+
         account.updateBalance(-withdrawalAmount);
         accountRepository.save(account);
-        // TODO: ADD WITHDRAWAL
 
         Withdrawal withdrawal = buildWithdrawal(account, usedBills, withdrawalAmount);
         withdrawalRepository.save(withdrawal);
@@ -99,45 +95,15 @@ public class AccountService {
                              .build();
     }
 
-    private void checkIfWithdrawalIsPossible(final int maxAmount, final int requestedAmount)
-        throws WithdrawalNotAllowedException {
+    private void checkForEnoughFunds(final int maxAmount, final int requestedAmount)
+        throws NotEnoughFundsException {
         if (requestedAmount > maxAmount) {
             // TODO: Improves to add values
-            throw new WithdrawalNotAllowedException("The requested amount exceeds the maximum withdrawal funds.");
+            throw new NotEnoughFundsException("The requested amount exceeds the maximum withdrawal funds.");
         }
     }
 
-    private List<UsedBill> optimalBillsCombination(final List<Bill> allBills, final int requestedAmount)
-        throws WithdrawalNotAllowedException {
-        List<UsedBill> optimalBills = new ArrayList<>();
-        int leftOverAmount = requestedAmount;
 
-        for (Bill bill : allBills) {
-            int totalBills = leftOverAmount / bill.getFaceValue();
-
-            if (totalBills <= 0) {
-                continue;
-            }
-
-            leftOverAmount -= bill.getFaceValue() * totalBills;
-            optimalBills.add(new UsedBill(bill, totalBills));
-        }
-
-        if (leftOverAmount > 0) {
-            throw new WithdrawalNotAllowedException("Not enough bills in the ATM to comply with withdrawal");
-        }
-        return optimalBills;
-    }
-
-    // O (n)
-    private List<Bill> getBillsToUpdate(final List<UsedBill> usedBills) {
-        for (UsedBill usedBill : usedBills) {
-            final Bill originalBill = usedBill.getBill();
-            final int newQuantity = originalBill.getQuantity() - usedBill.getQuantity();
-            originalBill.setQuantity(newQuantity);
-        }
-        return usedBills.stream().map(UsedBill::getBill).toList();
-    }
 
     private Withdrawal buildWithdrawal(
         final Account account,
