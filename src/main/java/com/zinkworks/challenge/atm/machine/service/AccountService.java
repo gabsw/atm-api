@@ -12,6 +12,7 @@ import com.zinkworks.challenge.atm.machine.pojo.UsedBill;
 import com.zinkworks.challenge.atm.machine.repository.AccountRepository;
 import com.zinkworks.challenge.atm.machine.repository.WithdrawalRepository;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
+import com.zinkworks.challenge.atm.machine.validation.MismatchedPinException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughFundsException;
 import org.springframework.stereotype.Service;
@@ -25,23 +26,25 @@ import java.util.Optional;
 public class AccountService {
 
     final AccountRepository accountRepository;
-
     final WithdrawalRepository withdrawalRepository;
-
     final BillService billService;
+
+    final PinService pinService;
 
     public AccountService(
         final AccountRepository accountRepository,
         final WithdrawalRepository withdrawalRepository,
-        final BillService billService) {
+        final BillService billService, final PinService pinService) {
         this.accountRepository = accountRepository;
         this.withdrawalRepository = withdrawalRepository;
         this.billService = billService;
+        this.pinService = pinService;
     }
 
 
-    public BalanceRead computeCurrentBalance(final String accountNumber) throws AccountNotFoundException {
-        final Account account = fetchAccount(accountNumber);
+    public BalanceRead computeCurrentBalance(final String accountNumber, final String pin)
+        throws AccountNotFoundException, MismatchedPinException {
+        final Account account = fetchAccount(accountNumber, pin);
 
         return BalanceRead.builder()
                           .balance(account.getBalance())
@@ -50,24 +53,17 @@ public class AccountService {
                           .build();
     }
 
-    private Account fetchAccount(final String accountNumber) throws AccountNotFoundException {
-        final Optional<Account> account = accountRepository.findByNumber(accountNumber);
-
-        if (account.isEmpty()) {
-            throw new AccountNotFoundException(String.format("Account with number=%s was not found.", accountNumber));
-        }
-
-        return account.get();
-    }
-
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public WithdrawalRead createWithdrawal(final String accountNumber, final WithdrawalCreate withdrawalCreate)
+    public WithdrawalRead createWithdrawal(
+        final String accountNumber,
+        final String pin,
+        final WithdrawalCreate withdrawalCreate)
         throws AccountNotFoundException, NotEnoughBillsException,
-               NotEnoughFundsException {
+               NotEnoughFundsException, MismatchedPinException {
 
         final int withdrawalAmount = withdrawalCreate.getAmount();
 
-        final Account account = fetchAccount(accountNumber);
+        final Account account = fetchAccount(accountNumber, pin);
 
         checkForEnoughFunds(account.maxWithdrawalAmount(), withdrawalAmount);
 
@@ -85,8 +81,9 @@ public class AccountService {
 
         List<DispensedBillRead> dispensedBillReads = usedBills.stream()
                                                               .map(
-                                                                  u -> new DispensedBillRead(u.getBill().getFaceValue(),
-                                                                                             u.getQuantity()))
+                                                                  usedBill -> new DispensedBillRead(
+                                                                      usedBill.getBill().getFaceValue(),
+                                                                      usedBill.getQuantity()))
                                                               .toList();
 
         return WithdrawalRead.builder()
@@ -94,6 +91,19 @@ public class AccountService {
                              .remainingBalance(account.getBalance())
                              .dispensedBills(dispensedBillReads)
                              .build();
+    }
+
+    private Account fetchAccount(final String accountNumber, final String pin)
+        throws AccountNotFoundException, MismatchedPinException {
+        final Optional<Account> optionalAccount = accountRepository.findByNumber(accountNumber);
+
+        if (optionalAccount.isEmpty()) {
+            throw new AccountNotFoundException(String.format("Account with number=%s was not found.", accountNumber));
+        }
+
+        Account account = optionalAccount.get();
+        pinService.pinMatches(pin, account.getPin());
+        return account;
     }
 
     private void checkForEnoughFunds(final int maxAmount, final int requestedAmount)

@@ -4,7 +4,7 @@ CREATE TABLE atm_machine.accounts
 (
     id            serial       NOT NULL,
     unique_number varchar(255) NOT NULL,
-    pin           varchar(4)   NOT NULL,
+    pin           varchar      NOT NULL,
     overdraft     integer      NOT NULL,
     balance       integer      NOT NULL,
     created_at    timestamp    NOT NULL default now(),
