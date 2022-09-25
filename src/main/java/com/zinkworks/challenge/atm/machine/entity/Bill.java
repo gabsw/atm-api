@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import java.time.Instant;
 
 import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @Builder
@@ -28,7 +29,8 @@ public class Bill {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "face_value", nullable = false) // TODO: Remove setter
+    @Setter(PRIVATE)
+    @Column(name = "face_value", nullable = false)
     private int faceValue;
 
     @Column(name = "quantity", nullable = false)

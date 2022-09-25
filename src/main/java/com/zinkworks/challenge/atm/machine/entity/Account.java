@@ -45,11 +45,11 @@ public class Account {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public int maxWithdrawalAmount() { // TODO: do we need to take into account the disposable money on the machine?
+    public int maxWithdrawalAmount() {
         return balance + overdraft;
     }
 
-    public void updateBalance(final int amount) { // TODO: check overdraft?
+    public void updateBalance(final int amount) {
         balance += amount;
     }
 }
