@@ -59,14 +59,14 @@ public class AccountServiceTests {
     @BeforeEach
     void setUp() throws MismatchedPinException {
         MockitoAnnotations.openMocks(this);
-        doNothing().when(pinService).pinMatches(eq(HASHED_PIN), any());
+        doNothing().when(pinService).pinMatches(eq(ACCOUNT_NUMBER), eq(HASHED_PIN), any());
     }
 
     @Test
     void computeBalanceForExistingAccount() throws AccountNotFoundException, MismatchedPinException {
         when(accountRepository.findByNumber(ACCOUNT_NUMBER)).thenReturn(Optional.ofNullable(buildAccount()));
 
-        final BalanceRead balanceRead = accountService.computeCurrentBalance(ACCOUNT_NUMBER, HASHED_PIN);
+        final BalanceRead balanceRead = accountService.getCurrentBalance(ACCOUNT_NUMBER, HASHED_PIN);
 
         assertEquals(100, balanceRead.getBalance());
         assertEquals(150, balanceRead.getMaxWithdrawalAmount());
@@ -78,7 +78,7 @@ public class AccountServiceTests {
         when(accountRepository.findByNumber("999")).thenReturn(Optional.empty());
 
         assertThrows(AccountNotFoundException.class,
-                     () -> accountService.computeCurrentBalance("999", HASHED_PIN));
+                     () -> accountService.getCurrentBalance("999", HASHED_PIN));
     }
 
     @Test

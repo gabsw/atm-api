@@ -4,6 +4,7 @@ import com.zinkworks.challenge.atm.entity.Bill;
 import com.zinkworks.challenge.atm.pojo.UsedBill;
 import com.zinkworks.challenge.atm.repository.BillRepository;
 import com.zinkworks.challenge.atm.validation.NotEnoughBillsException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Comparators;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import static java.util.Comparator.comparing;
 
 @Service
+@Slf4j
 public class BillService {
 
     final BillRepository billRepository;
@@ -29,6 +31,7 @@ public class BillService {
 
         final boolean isOrdered = Comparators.isInOrder(allBills, comparing(Bill::getFaceValue).reversed());
         if (!isOrdered) {
+            log.error("optimalBillsCombination received unordered list of all bills");
             throw new IllegalArgumentException("allBills must be ordered by their faceValue descending");
         }
 
@@ -51,6 +54,9 @@ public class BillService {
         }
 
         if (leftOverAmount > 0) {
+            log.error("Failed to proceed with withdrawal of {} due to the lack of bills in the value of {}",
+                      requestedAmount,
+                      leftOverAmount);
             throw new NotEnoughBillsException("Not enough bills in the ATM to proceed with the operation.");
         }
         return optimalBills;

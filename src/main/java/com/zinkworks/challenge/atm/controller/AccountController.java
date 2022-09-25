@@ -35,7 +35,7 @@ public class AccountController {
         @PathVariable final String accountNumber,
         @RequestHeader("Authorization") final String pin)
     throws AccountNotFoundException, MismatchedPinException {
-        return accountService.computeCurrentBalance(accountNumber, pin);
+        return accountService.getCurrentBalance(accountNumber, pin);
     }
 
     @PostMapping("/{accountNumber}/withdrawal")
