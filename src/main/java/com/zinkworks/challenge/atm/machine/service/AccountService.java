@@ -63,7 +63,7 @@ public class AccountService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public WithdrawalRead createWithdrawal(final String accountNumber, final WithdrawalCreate withdrawalCreate)
-        throws AccountNotFoundException, ForbiddenOperationException, NotEnoughBillsException,
+        throws AccountNotFoundException, NotEnoughBillsException,
                NotEnoughFundsException {
 
         final int withdrawalAmount = withdrawalCreate.getAmount();
@@ -102,8 +102,6 @@ public class AccountService {
             throw new NotEnoughFundsException("The requested amount exceeds the maximum withdrawal funds.");
         }
     }
-
-
 
     private Withdrawal buildWithdrawal(
         final Account account,

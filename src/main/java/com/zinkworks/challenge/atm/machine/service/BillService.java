@@ -4,9 +4,12 @@ import com.zinkworks.challenge.atm.machine.entity.Bill;
 import com.zinkworks.challenge.atm.machine.repository.BillRepository;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
 import org.springframework.stereotype.Service;
-
+import com.google.common.collect.Comparators;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
 
 @Service
 public class BillService {
@@ -23,6 +26,12 @@ public class BillService {
 
     public List<UsedBill> optimalBillsCombination(final List<Bill> allBills, final int requestedAmount)
         throws NotEnoughBillsException {
+
+        final boolean isOrdered = Comparators.isInOrder(allBills, comparing(Bill::getFaceValue).reversed());
+        if (!isOrdered) {
+            throw new IllegalArgumentException("allBills must be ordered by their faceValue descending");
+        }
+
         List<UsedBill> optimalBills = new ArrayList<>();
         int leftOverAmount = requestedAmount;
 
@@ -52,7 +61,6 @@ public class BillService {
         }
 
         final List<Bill> billsToUpdate = usedBills.stream().map(UsedBill::getBill).toList();
-        billRepository.saveAll(billsToUpdate);
-        return billsToUpdate;
+        return billRepository.saveAll(billsToUpdate);
     }
 }

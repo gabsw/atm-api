@@ -1,5 +1,7 @@
 package com.zinkworks.challenge.atm.machine.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,8 @@ import java.time.Instant;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "accounts", schema = "atm_machine")

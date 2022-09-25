@@ -7,6 +7,7 @@ import com.zinkworks.challenge.atm.machine.service.AccountService;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
 import com.zinkworks.challenge.atm.machine.validation.ForbiddenOperationException;
+import com.zinkworks.challenge.atm.machine.validation.NotEnoughFundsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class AccountController {
     public ResponseEntity<WithdrawalRead> createWithdrawal(
         @PathVariable final String accountNumber,
         @Valid @RequestBody WithdrawalCreate withdrawal)
-        throws ForbiddenOperationException, AccountNotFoundException, NotEnoughBillsException {
+        throws ForbiddenOperationException, AccountNotFoundException, NotEnoughBillsException, NotEnoughFundsException {
         WithdrawalRead createdWithdrawal = accountService.createWithdrawal(accountNumber, withdrawal);
         return new ResponseEntity<>(createdWithdrawal, HttpStatus.CREATED);
     }
