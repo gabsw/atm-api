@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -47,11 +48,15 @@ public class Withdrawal {
     private Instant createdAt;
 
     @OneToMany(mappedBy = "withdrawal", cascade = CascadeType.ALL)
-//    @JoinColumn(name = "bill_id")
     private List<DispensedBill> bills = new ArrayList<>();
 
     public void addDispensedBill(final DispensedBill dispensedBill) {
         dispensedBill.setWithdrawal(this);
         bills.add(dispensedBill);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Instant.now();
     }
 }

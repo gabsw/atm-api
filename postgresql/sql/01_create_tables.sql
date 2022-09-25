@@ -2,17 +2,17 @@ CREATE SCHEMA atm_machine;
 
 CREATE TABLE atm_machine.accounts
 (
-    id            serial       NOT NULL,
-    unique_number varchar(255) NOT NULL,
-    pin           varchar      NOT NULL,
-    overdraft     integer      NOT NULL,
-    balance       integer      NOT NULL,
-    created_at    timestamp    NOT NULL default now(),
-    updated_at    timestamp    NOT NULL default now(),
+    id             serial       NOT NULL,
+    account_number varchar(255) NOT NULL,
+    pin            varchar      NOT NULL,
+    overdraft      integer      NOT NULL,
+    balance        integer      NOT NULL,
+    created_at     timestamp    NOT NULL default now(),
+    updated_at     timestamp    NOT NULL default now(),
     CONSTRAINT PK_ACCOUNT_ID PRIMARY KEY (id),
-    CONSTRAINT UQ_NUMBER UNIQUE (unique_number),
+    CONSTRAINT UQ_NUMBER UNIQUE (account_number),
     CONSTRAINT NON_NEG_OVERDRAFT CHECK (overdraft >= 0),
-    CONSTRAINT CURRENT_BALANCE CHECK (balance >= 0 - overdraft)
+    CONSTRAINT CURRENT_BALANCE CHECK (balance >= -overdraft)
 );
 
 CREATE TABLE atm_machine.bills
