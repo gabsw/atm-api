@@ -1,10 +1,13 @@
 package com.zinkworks.challenge.atm.machine.service;
 
 import com.zinkworks.challenge.atm.machine.dto.BalanceRead;
+import com.zinkworks.challenge.atm.machine.dto.WithdrawalCreate;
 import com.zinkworks.challenge.atm.machine.entity.Account;
 import com.zinkworks.challenge.atm.machine.repository.AccountRepository;
+import com.zinkworks.challenge.atm.machine.repository.WithdrawalRepository;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
+import com.zinkworks.challenge.atm.machine.validation.NotEnoughFundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +27,12 @@ public class AccountServiceTests {
     @Mock
     AccountRepository accountRepository;
 
+    @Mock
+    BillService billService;
+
+    @Mock
+    WithdrawalRepository withdrawalRepository;
+
     @InjectMocks
     AccountService accountService;
 
@@ -34,13 +43,8 @@ public class AccountServiceTests {
 
     @Test
     void computeBalanceForExistingAccount() throws AccountNotFoundException {
-        Account account = Account.builder()
-                                 .balance(100)
-                                    .overdraft(50)
-                                 .number(ACCOUNT_NUMBER)
-                                 .build();
 
-        when(accountRepository.findByNumber(ACCOUNT_NUMBER)).thenReturn(Optional.ofNullable(account));
+        when(accountRepository.findByNumber(ACCOUNT_NUMBER)).thenReturn(Optional.ofNullable(buildAccount()));
 
         final BalanceRead balanceRead = accountService.computeCurrentBalance(ACCOUNT_NUMBER);
 
@@ -55,5 +59,21 @@ public class AccountServiceTests {
 
         assertThrows(AccountNotFoundException.class,
                      () -> accountService.computeCurrentBalance("999"));
+    }
+
+    @Test
+    void notEnoughFunds() {
+        when(accountRepository.findByNumber(ACCOUNT_NUMBER)).thenReturn(Optional.ofNullable(buildAccount()));
+
+        assertThrows(NotEnoughFundsException.class,
+                     () -> accountService.createWithdrawal(ACCOUNT_NUMBER, new WithdrawalCreate(999999999)));
+    }
+
+    private Account buildAccount() {
+        return Account.builder()
+               .balance(100)
+               .overdraft(50)
+               .number(ACCOUNT_NUMBER)
+               .build();
     }
 }

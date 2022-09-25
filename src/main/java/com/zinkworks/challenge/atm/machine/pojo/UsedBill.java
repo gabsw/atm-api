@@ -1,4 +1,4 @@
-package com.zinkworks.challenge.atm.machine.service;
+package com.zinkworks.challenge.atm.machine.pojo;
 
 import com.zinkworks.challenge.atm.machine.entity.Bill;
 import lombok.AllArgsConstructor;

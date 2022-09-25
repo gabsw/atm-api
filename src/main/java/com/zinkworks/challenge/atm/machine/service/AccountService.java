@@ -8,6 +8,7 @@ import com.zinkworks.challenge.atm.machine.entity.Account;
 import com.zinkworks.challenge.atm.machine.entity.Bill;
 import com.zinkworks.challenge.atm.machine.entity.DispensedBill;
 import com.zinkworks.challenge.atm.machine.entity.Withdrawal;
+import com.zinkworks.challenge.atm.machine.pojo.UsedBill;
 import com.zinkworks.challenge.atm.machine.repository.AccountRepository;
 import com.zinkworks.challenge.atm.machine.repository.WithdrawalRepository;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;

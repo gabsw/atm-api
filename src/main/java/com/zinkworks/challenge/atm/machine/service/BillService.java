@@ -1,6 +1,7 @@
 package com.zinkworks.challenge.atm.machine.service;
 
 import com.zinkworks.challenge.atm.machine.entity.Bill;
+import com.zinkworks.challenge.atm.machine.pojo.UsedBill;
 import com.zinkworks.challenge.atm.machine.repository.BillRepository;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
 import org.springframework.stereotype.Service;
