@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -33,8 +34,8 @@ public class DispensedBill {
     @Column(name = "bill_id", nullable = false)
     private Integer billId;
 
-    @Column(name = "withdrawal_id", nullable = false)
-    private Integer withdrawalId;
+//    @Column(name = "withdrawal_id", nullable = false)
+//    private Integer withdrawalId;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
@@ -43,4 +44,7 @@ public class DispensedBill {
     @Column(name = "created_at", nullable = false)
     @Generated(GenerationTime.INSERT)
     private Instant createdAt;
+
+    @ManyToOne()
+    private Withdrawal withdrawal;
 }

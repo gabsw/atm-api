@@ -13,12 +13,10 @@ import com.zinkworks.challenge.atm.machine.repository.WithdrawalRepository;
 import com.zinkworks.challenge.atm.machine.validation.AccountNotFoundException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughBillsException;
 import com.zinkworks.challenge.atm.machine.validation.NotEnoughFundsException;
-import com.zinkworks.challenge.atm.machine.validation.ForbiddenOperationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,8 +83,10 @@ public class AccountService {
         withdrawalRepository.save(withdrawal);
 
         List<DispensedBillRead> dispensedBillReads = usedBills.stream()
-            .map(u -> new DispensedBillRead(u.getBill().getFaceValue(), u.getQuantity()))
-            .toList();
+                                                              .map(
+                                                                  u -> new DispensedBillRead(u.getBill().getFaceValue(),
+                                                                                             u.getQuantity()))
+                                                              .toList();
 
         return WithdrawalRead.builder()
                              .accountNumber(accountNumber)
@@ -108,7 +108,9 @@ public class AccountService {
         final List<UsedBill> usedBills,
         final int withdrawalAmount) {
 
-        List<DispensedBill> allDispensedBills = new ArrayList<>();
+        Withdrawal withdrawal = new Withdrawal();
+        withdrawal.setAccountId(account.getId());
+        withdrawal.setAmount(withdrawalAmount);
 
         for (UsedBill usedBill : usedBills) {
             final DispensedBill
@@ -116,14 +118,10 @@ public class AccountService {
                                              .billId(usedBill.getBill().getId())
                                              .quantity(usedBill.getQuantity())
                                              .build();
-            allDispensedBills.add(dispensedBill);
+            withdrawal.addDispensedBill(dispensedBill);
         }
 
-        return Withdrawal.builder()
-                         .accountId(account.getId())
-                         .bills(allDispensedBills)
-                         .amount(withdrawalAmount)
-                         .build();
+        return withdrawal;
     }
 }
 

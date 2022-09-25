@@ -8,6 +8,7 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -44,7 +46,12 @@ public class Withdrawal {
     @Generated(GenerationTime.INSERT)
     private Instant createdAt;
 
-    @OneToMany()
-    @JoinColumn(name = "bill_id")
-    private List<DispensedBill> bills;
+    @OneToMany(mappedBy = "withdrawal", cascade = CascadeType.ALL)
+//    @JoinColumn(name = "bill_id")
+    private List<DispensedBill> bills = new ArrayList<>();
+
+    public void addDispensedBill(final DispensedBill dispensedBill) {
+        dispensedBill.setWithdrawal(this);
+        bills.add(dispensedBill);
+    }
 }
