@@ -48,4 +48,5 @@ In order to run all the tests:
 2. Use Flyway for database migrations, which is what I typically use at work
 3. Use MapStruct for an out-of-the-box mapping between objects instead of doing that manually
 4. Add SonarQube to the pipeline
-5. Add Javadocs
+5. Using UUID4 instead of Serial for the entities id's, which I feel is better suited for a real world scenario
+6. Add Javadocs
